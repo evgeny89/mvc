@@ -9,6 +9,6 @@
 </head>
 <body>
 
-<?php require_once ('./lessons/less1.php') ?>
+<?php require_once ('./lessons/less2.php') ?>
 </body>
 </html>
