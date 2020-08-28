@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/src/style/style.css">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            E-SHOP
+        </div>
+        <nav class="menu">
+            <ul>
+                {% for link in menu %}
+                <li><a href="{{ link.path }}">{{ link.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    <section class="section">
+        {{ content|raw }}
+    </section>
+    <div class="footer">
+        <span>Shop 2020 &copy;</span>
+        {% if next %}
+            <a href="/{{ next }}">загрузить ещё</a>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

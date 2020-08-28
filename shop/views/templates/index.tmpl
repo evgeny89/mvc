@@ -1,0 +1,23 @@
+<div class="header-catalog">
+    <a
+            href="/catalog/index/{{ page - 1 }}"
+            {% if page < 1 %}
+                class="disabled"
+            {% endif %}
+    >Назад</a>
+    <a
+            href="/catalog/index/{{ page + 1 }}"
+            {% if page > max - 1 %}
+                class="disabled"
+            {% endif %}
+    >Вперед</a>
+</div>
+{% for item in products %}
+    <div class="card">
+        <h3><a href="/index/single/{{ item.id }}"> {{ item.name }}</a></h3>
+        <h5>{{ item.category }}</h5>
+        <p>цена: &#8381; {{ item.price }}</p>
+        <p>соства: {{ item.description }}</p>
+    </div>
+{% endfor %}
+
