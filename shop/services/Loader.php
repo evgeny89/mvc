@@ -14,7 +14,7 @@ abstract class Loader
         \Twig_Autoloader::register();
         $this->loader = new \Twig_Loader_Filesystem(Path::getRoot() . '/views/templates');
         $this->twig = new \Twig_Environment($this->loader);
-        $this->template = $this->twig->loadTemplate($template);
+        $this->template = $this->twig->loadTemplate($template . '.tmpl');
     }
 
     abstract function render($array);

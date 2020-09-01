@@ -1,33 +1,21 @@
 <?php
 
-require_once 'services/Loader.php';
-require_once 'services/Autoloader.php';
-require_once 'services/Twig/Autoloader.php';
 
-require_once 'config/Path.php';
-require_once 'config/Config.php';
+spl_autoload_register(function ($class_name) {
+    if (preg_match('~Twig_~', $class_name)) {
+        $class_name = 'services/' . str_replace('_', '/', $class_name);
+    }
+        require_once $class_name . '.php';
+});
 
-require_once 'model/Connection.php';
-require_once 'model/Products.php';
+$rout = new \services\Router();
 
-use services\Autoloader;
-use model\Products;
+$controller = $rout->getController();
+$index = new $controller(
+    $rout->getAction(),
+    $rout->getModel(),
+    $rout->getProps()
+);
 
-//генерирует 200 карточек)
-//require_once 'controllers/generate.php';
+echo $index->getAction();
 
-Products::$productOnPage = 25;
-
-$products = new Products();
-$page = $_GET['page'] ?? 1;
-$count = $products->count();
-
-try {
-    $index = new Autoloader('catalog.tmpl');
-    echo $index->render([
-        'products' => $products->select((int)$page * Products::$productOnPage),
-        'next' => $count > (int)$page * Products::$productOnPage ? (int)$page + 1 : null
-    ]);
-} catch (Exception $e) {
-    die('ERROR ' . $e->getMessage());
-}
