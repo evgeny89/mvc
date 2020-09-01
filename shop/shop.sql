@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Авг 25 2020 г., 14:48
+-- Время создания: Сен 01 2020 г., 15:30
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -20,6 +20,43 @@ SET time_zone = "+00:00";
 --
 -- База данных: `shop`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `baskets`
+--
+
+CREATE TABLE `baskets` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `count` int NOT NULL DEFAULT '1',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `order_id` int DEFAULT NULL,
+  `status` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `baskets`
+--
+
+INSERT INTO `baskets` (`id`, `user_id`, `product_id`, `count`, `date`, `order_id`, `status`) VALUES
+(12, 1, 1, 3, '2020-08-29 08:36:08', 3, 2),
+(13, 1, 2, 2, '2020-08-29 08:39:44', 3, 2),
+(14, 1, 2, 2, '2020-08-29 09:52:45', 5, 3),
+(15, 1, 1, 3, '2020-08-29 09:53:25', 6, 1),
+(16, 1, 5, 3, '2020-08-29 09:53:27', 6, 1),
+(17, 1, 6, 3, '2020-08-29 10:06:19', 7, 4),
+(18, 1, 7, 1, '2020-08-29 10:06:26', 7, 4),
+(19, 1, 8, 1, '2020-08-29 10:06:27', 7, 4),
+(20, 1, 2, 2, '2020-08-29 11:36:36', 8, 1),
+(21, 1, 12, 1, '2020-08-29 13:30:07', 9, 1),
+(22, 1, 2, 1, '2020-08-29 13:30:07', 9, 1),
+(23, 5, 2, 2, '2020-08-29 13:55:47', 10, 1),
+(33, 1, 3, 3, '2020-09-01 10:51:04', 11, 1),
+(34, 1, 3, 2, '2020-09-01 12:21:51', NULL, 0),
+(35, 1, 45, 5, '2020-09-01 12:21:57', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -86,7 +123,8 @@ CREATE TABLE `comments` (
 INSERT INTO `comments` (`id`, `athor_id`, `product_id`, `date`, `description`) VALUES
 (1, 1, 1, '2020-08-22 11:17:17', 'классная рубашка'),
 (2, 1, 1, '2020-08-22 16:44:13', 'Хорошо сидит'),
-(3, 1, 1, '2020-08-22 16:45:10', 'вчера купил');
+(3, 1, 1, '2020-08-22 16:45:10', 'вчера купил'),
+(4, 1, 1, '2020-08-26 09:54:30', 'При стирке не линяет');
 
 -- --------------------------------------------------------
 
@@ -97,18 +135,55 @@ INSERT INTO `comments` (`id`, `athor_id`, `product_id`, `date`, `description`) V
 CREATE TABLE `menu` (
   `id` int NOT NULL,
   `name` varchar(30) NOT NULL,
-  `path` varchar(60) NOT NULL
+  `path` varchar(60) NOT NULL,
+  `parent_id` int NOT NULL DEFAULT '0',
+  `access` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `menu`
 --
 
-INSERT INTO `menu` (`id`, `name`, `path`) VALUES
-(1, 'Главная', '/'),
-(2, 'Каталог', '/catalog'),
-(3, 'Авторизация', '/auth'),
-(4, 'Регистрация', '/reg');
+INSERT INTO `menu` (`id`, `name`, `path`, `parent_id`, `access`) VALUES
+(1, 'Главная', '/', 0, 0),
+(2, 'Каталог', '/catalog', 0, 0),
+(3, 'Вход', '/auth', 0, 0),
+(4, 'Регистрация', '/reg', 3, 0),
+(5, 'Корзина', '/basket', 7, 1),
+(6, 'Выход', '/lib/logout.php', 7, 1),
+(7, 'Личный кабинет', '/user', 0, 1),
+(8, 'Оформить заказ', '/createOrder', 5, 1),
+(9, 'Заказы', '/orders', 7, 1),
+(10, 'Админка', '/admin', 0, 2),
+(11, 'Заказы', '/admin/orders', 10, 2),
+(12, 'Добавить товар', '/admin/add', 10, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `summ` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `orders`
+--
+
+INSERT INTO `orders` (`id`, `date`, `summ`) VALUES
+(3, '2020-08-29 09:47:54', 15829),
+(5, '2020-08-29 09:52:50', 5632),
+(6, '2020-08-29 09:53:34', 13680),
+(7, '2020-08-29 10:29:40', 26898),
+(8, '2020-08-29 11:36:42', 5632),
+(9, '2020-08-29 13:30:14', 5151),
+(10, '2020-08-29 13:55:52', 5632),
+(11, '2020-09-01 11:14:56', 23550),
+(12, '2020-09-01 11:16:17', NULL);
 
 -- --------------------------------------------------------
 
@@ -1864,7 +1939,8 @@ INSERT INTO `products` (`id`, `category_id`, `brand_id`, `name`, `price`, `descr
 (1731, 2, 2, 'Топ', 6498, 'текстиль 100%'),
 (1732, 3, 3, 'Кроссовки', 4320, 'хлопок 100%'),
 (1733, 1, 5, 'Футболка', 3196, 'Полиэстер 85% хлопок 15%'),
-(1734, 1, 1, 'Майка', 9352, 'хлопок 100%');
+(1734, 1, 1, 'Майка', 9352, 'хлопок 100%'),
+(1735, 1, 2, 'Топ', 3299, '100% хлопок');
 
 -- --------------------------------------------------------
 
@@ -1882,11 +1958,40 @@ CREATE TABLE `router` (
 --
 
 INSERT INTO `router` (`path`, `name`) VALUES
+('admin', 'Админка'),
 ('auth', 'Авторизация'),
+('basket', 'Корзина товаров'),
 ('catalog', 'Каталог'),
 ('coments', 'Коментарии'),
+('createOrder', 'Заказ'),
+('order', 'Заказ'),
+('orders', 'заказы'),
 ('reg', 'Регистрация'),
+('user', 'Личный кабинет'),
 ('users', 'Пользователи');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `state`
+--
+
+CREATE TABLE `state` (
+  `id` int NOT NULL,
+  `name` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `state`
+--
+
+INSERT INTO `state` (`id`, `name`) VALUES
+(0, 'добавлен в корзину'),
+(1, 'сформирован заказ'),
+(2, 'заказ подтвержден'),
+(3, 'заказ оплачен'),
+(4, 'заказ отправлен'),
+(5, 'заказ получен');
 
 -- --------------------------------------------------------
 
@@ -1897,22 +2002,35 @@ INSERT INTO `router` (`path`, `name`) VALUES
 CREATE TABLE `users` (
   `id` int NOT NULL,
   `login` varchar(32) NOT NULL,
-  `password` varchar(32) NOT NULL,
+  `password` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `name` varchar(32) NOT NULL,
-  `date_registration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `date_registration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `role` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `login`, `password`, `name`, `date_registration`) VALUES
-(1, 'Admin', '20031989', 'Евгений', '2020-08-21 10:36:55'),
-(2, 'User', '12345678', 'Иван', '2020-08-21 10:49:14');
+INSERT INTO `users` (`id`, `login`, `password`, `name`, `date_registration`, `role`) VALUES
+(1, 'Admin', '$2y$10$jYRCqhXowWttaLeuD2FJ5.340TykPh0hDIPLDenQOTTUf5nr5lS1O', 'Евгений', '2020-08-21 10:36:55', 1),
+(2, 'User', '$2y$10$ybDkF3JQhjaiH.8caOjYbezUF1vkZiBSiyu/mCtI9hVJQtgm3GVku', 'Иван', '2020-08-21 10:49:14', 0),
+(5, 'evgeny89', '$2y$10$jYRCqhXowWttaLeuD2FJ5.340TykPh0hDIPLDenQOTTUf5nr5lS1O', 'Владимир', '2020-08-26 08:24:15', 0),
+(9, 'kas', '$2y$10$ybDkF3JQhjaiH.8caOjYbezUF1vkZiBSiyu/mCtI9hVJQtgm3GVku', 'Евген', '2020-08-31 11:43:22', 0);
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `baskets`
+--
+ALTER TABLE `baskets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `product_basket_ibfk_1` (`product_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `status` (`status`);
 
 --
 -- Индексы таблицы `brands`
@@ -1941,6 +2059,12 @@ ALTER TABLE `menu`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `products`
 --
 ALTER TABLE `products`
@@ -1955,6 +2079,12 @@ ALTER TABLE `router`
   ADD PRIMARY KEY (`path`);
 
 --
+-- Индексы таблицы `state`
+--
+ALTER TABLE `state`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `users`
 --
 ALTER TABLE `users`
@@ -1964,6 +2094,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT для сохранённых таблиц
 --
+
+--
+-- AUTO_INCREMENT для таблицы `baskets`
+--
+ALTER TABLE `baskets`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT для таблицы `brands`
@@ -1981,29 +2117,44 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT для таблицы `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT для таблицы `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1735;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1736;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
+
+--
+-- Ограничения внешнего ключа таблицы `baskets`
+--
+ALTER TABLE `baskets`
+  ADD CONSTRAINT `baskets_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `baskets_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `baskets_ibfk_3` FOREIGN KEY (`status`) REFERENCES `state` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `baskets_ibfk_4` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Ограничения внешнего ключа таблицы `comments`

@@ -4,14 +4,13 @@
 namespace controllers;
 
 use services\Autoloader;
-use services\FontController;
+use services\FrontController;
 
-class CatalogController extends FontController
+class CatalogController extends FrontController
 {
     protected function action_index($pageNum)
     {
         $page = new Autoloader('index');
-
         return $page->render([
             'products' => $this->model->select($pageNum),
             'page' => $pageNum,
@@ -21,12 +20,25 @@ class CatalogController extends FontController
 
     protected function action_single()
     {
-        $page = new Autoloader('single');
+        $tmpl = [
+            'page' => 'single',
+            'res' => [
+                'item' => $this->model->selectOne((int)$this->props),
+                'back' => $_SERVER['HTTP_REFERER']
+            ]
+        ];
+        $tmpl = $this->model->checkAuth($tmpl);
+        $page = new Autoloader($tmpl['page']);
+        return $page->render($tmpl['res']);
+    }
 
-        return $page->render([
-            'item' => $this->model->selectOne((int)$this->props),
-            'back' => $_SERVER['HTTP_REFERER']
-        ]);
+    protected function action_add()
+    {
+        if($this->model->addItemInBasket((int)$this->props)) {
+            return $this->action_single();
+        } else {
+            return $this->action_error(['content' => 'неизвестная ошибка добавления товара']);
+        }
     }
 
 }

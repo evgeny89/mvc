@@ -24,7 +24,6 @@ a:hover {
 }
 
 .section {
-    padding: 20px 10px;
     display: flex;
     flex: 1 0 auto;
     justify-content: space-between;
@@ -49,8 +48,12 @@ a:hover {
     align-items: center;
 }
 
+.header {
+    margin-bottom: 20px;
+}
+
 .footer {
-    margin-top: -20px;
+    margin-bottom: -20px;
 }
 
 .card-box .card {
@@ -92,9 +95,23 @@ a:hover {
     list-style: none;
 }
 
+.sub-menu {
+    padding: 10px 40px;
+    height: 40px;
+    background-color: #5d8cb7;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.sub-menu a {
+    padding: 5px 15px;
+}
+
 .form {
-    width: 320px;
-    height: 200px;
+    min-width: 320px;
+    height: 250px;
     border: 1px solid black;
     padding: 20px;
     display: flex;
@@ -115,4 +132,38 @@ a:hover {
     justify-content: space-between;
     font-size: 16px;
     align-items: flex-end;
+}
+
+.info {
+    color: #bc83c1;
+}
+
+.basket {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-bottom: 20px;
+    flex: 1 0 auto;
+}
+
+.items {
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 2px solid #505181;
+    padding: 10px;
+}
+
+th {
+    font-size: 18px;
+    padding: 10px;
+    text-align: left;
 }

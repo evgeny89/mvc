@@ -17,5 +17,5 @@ $index = new $controller(
     $rout->getProps()
 );
 
-echo $index->getAction();
+$index->getAction();
 

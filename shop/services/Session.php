@@ -10,8 +10,8 @@ class Session
         session_start();
     }
 
-    public static function set($value) {
-        $_SESSION['user'] = $value;
+    public static function set($name, $value) {
+        $_SESSION[$name] = $value;
     }
 
     public static function check() {
