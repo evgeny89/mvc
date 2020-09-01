@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../src/style.css">
+    <title>Image</title>
+</head>
+<body>
+<div class="wrapper container">
+    <nav>
+        {% for link in links %}
+            <a class="links" href="{{ link.path }}">{{ link.name }}</a>
+        {% endfor %}
+    </nav>
+    <div class="card single">
+        <header class="header">
+            <h4>Имя: {{ picture.name }}</h4>
+            <h3>Автор: {{ picture.user_name }}</h3>
+        </header>
+        <img src="{{ picture.path }}{{ picture.name }}" alt="{{ picture.name }}">
+        <footer class="footer">
+            <span>просмотров: {{ picture.views + 1 }}</span>
+            <span>размер: {{ picture.size }}</span>
+        </footer>
+        <p>Загружено: {{ picture.date }}</p>
+    </div>
+</div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 // задания 1, 2, 3, 4.
 class Product {
     private $article;
-    private $price;
+    protected $price;
     private $name;
     private $description;
 
@@ -194,9 +194,6 @@ $a1->foo();
 $a2->foo();
 $a1->foo();
 $a2->foo();
-
-// хм... судя по поведению статическое свойство класса и статическая переменная метода класса - ничем не отличаются и принадлежат классу а не его созданному экземпляру.
-
 
 class B extends A {
 }
