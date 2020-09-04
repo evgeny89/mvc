@@ -1,7 +1,7 @@
 <table>
     {% for item in order %}
     <tr>
-        <td>{{ item.name }}</td>
+        <td><a href="/catalog/single/{{ item.id }}">{{ item.name }}</a></td>
         <td>{{ item.price }} руб.</td>
         <td>{{ item.count }} шт.</td>
     </tr>
@@ -9,3 +9,6 @@
     <tr><td>итого: </td><td>{{ totalSum }} руб.</td><td>{{ totalCount }} шт.</td></tr>
     <tr><td colspan="3">Стратус: {{ status }}</td></tr>
 </table>
+<header class="menu sub-menu">
+    <a href="{{ back }}">назад</a>
+</header>

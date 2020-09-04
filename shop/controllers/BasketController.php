@@ -26,7 +26,7 @@ class BasketController extends \services\FrontController
         $tmpl = [
             'page' => 'orders',
             'res' => [
-                'orders' => $this->model->getUserOrders()
+                'orders' => $this->model->getUserOrders(),
             ]
         ];
         $tmpl = $this->model->checkAuth($tmpl);

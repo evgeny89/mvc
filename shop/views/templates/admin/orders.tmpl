@@ -1,0 +1,36 @@
+<table>
+    <th>заказ</th>
+    <th>сумма</th>
+    <th>кол-во товаров</th>
+    <th>заказчик</th>
+    <th>статус</th>
+    {% for key, order in orders %}
+    <tr class="order">
+        <td><a href="/basket/order/{{ key }}">От {{ order.date }}</a></td>
+        <td>{{ order.summ }} руб.</td>
+        <td>{{ order.count }}</td>
+        <td>{{ order.user }}</td>
+        <td>
+            <form method="post" action="/admin/changeStatus" class="form-status">
+                <input type="hidden" name="order" value="{{ key }}" readonly>
+                <select name="status">
+                    {% for state in status %}
+                        <option
+                                value="{{ state.id }}"
+                                {% if state.id == order.state_id %}
+                                    selected
+                                {% endif %}
+                        >
+                            {{ state.name }}
+                            {% if state.id == order.state_id %}
+                                &#128504;
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button class="btn">Изменить</button>
+            </form>
+        </td>
+        {% endfor %}
+    </tr>
+</table>

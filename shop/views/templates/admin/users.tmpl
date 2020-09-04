@@ -1,0 +1,34 @@
+<table>
+    <th>пользователь</th>
+    <th>имя</th>
+    <th>дата регистрации</th>
+    <th>роль</th>
+    {% for user in users %}
+    <tr class="order">
+        <td><a href="/admin/user/{{ user.id }}">{{ user.login }}</a></td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.date_registration }}</td>
+        <td>
+            <form method="post" action="/admin/changeRole" class="form-status">
+                <input type="hidden" name="user" value="{{ user.id }}" readonly>
+                <select name="role">
+                    {% for state in role %}
+                        <option
+                                value="{{ state.id }}"
+                                {% if state.id == user.role %}
+                                    selected
+                                {% endif %}
+                        >
+                            {{ state.name }}
+                            {% if state.id == user.role %}
+                                &#128504;
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button class="btn">Изменить</button>
+            </form>
+        </td>
+        {% endfor %}
+    </tr>
+</table>

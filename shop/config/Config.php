@@ -40,35 +40,63 @@ class Config
             'name' => 'Регистрация',
             'path' => '/user/reg',
             'parent' => 3,
-            'access' => 1
+            'access' => 1,
+            'sub-menu' => ['user']
         ],
         [
             'id' => 5,
             'name' => 'Корзина',
             'path' => '/basket/index',
             'parent' => 2,
-            'access' => 2
-        ],
-        [
-            'id' => 6,
-            'name' => 'Выход',
-            'path' => '/user/logout',
-            'parent' => 0,
-            'access' => 2
+            'access' => 2,
+            'sub-menu' => ['user', 'basket']
         ],
         [
             'id' => 7,
             'name' => 'Админка',
             'path' => '/admin/index',
             'parent' => 0,
-            'access' => 3
+            'access' => 4,
         ],
         [
             'id' => 8,
             'name' => 'Мои заказы',
             'path' => '/basket/orders',
             'parent' => 2,
-            'access' => 2
+            'access' => 2,
+            'sub-menu' => ['user', 'basket']
+        ],
+        [
+            'id' => 6,
+            'name' => 'Выход',
+            'path' => '/user/logout',
+            'parent' => 2,
+            'access' => 2,
+            'sub-menu' => ['user']
+        ],
+        [
+            'id' => 9,
+            'name' => 'Управление заказами',
+            'path' => '/admin/orders',
+            'parent' => 7,
+            'access' => 4,
+            'sub-menu' => ['admin']
+        ],
+        [
+            'id' => 10,
+            'name' => 'Управление пользователями',
+            'path' => '/admin/users',
+            'parent' => 7,
+            'access' => 5,
+            'sub-menu' => ['admin']
+        ],
+        [
+            'id' => 11,
+            'name' => 'Добавить товар',
+            'path' => '/admin/product',
+            'parent' => 7,
+            'access' => 5,
+            'sub-menu' => ['admin']
         ]
     ];
 
@@ -91,15 +119,14 @@ class Config
     }
 
     public static function subMenu() {
-        preg_match('/\w+\/\w+/', $_GET['page'], $path);
-        $key = array_search('/' . $path[0], array_column(self::$menu, 'path'));
+        preg_match('/(\w+)\/\w+/', $_GET['page'], $path);
         if (empty($_SESSION['user'])) {
-            return array_filter(self::$menu, function ($item) use ($key) {
-                return $item['access'] < 2 && $item['parent'] === self::$menu[$key]['id'];
+            return array_filter(self::$menu, function ($item) use ($path) {
+                return $item['access'] < 2 && isset($item['sub-menu']) && in_array($path[1], $item['sub-menu']);
             });
         } else {
-            return array_filter(self::$menu, function ($item) use ($key) {
-                return $item['access'] !== 1 && $item['access'] <= $_SESSION['admin'] + 2 && $item['parent'] === self::$menu[$key]['id'];
+            return array_filter(self::$menu, function ($item) use ($path) {
+                return $item['access'] !== 1 && isset($item['sub-menu']) && $item['access'] <= $_SESSION['admin'] + 2 && in_array($path[1], $item['sub-menu']);
             });
         }
     }

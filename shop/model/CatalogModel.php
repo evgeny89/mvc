@@ -50,6 +50,25 @@ class CatalogModel extends \model\Connection
         return $stmt->execute();
     }
 
+    public function getComments($id)
+    {
+        $sql = "SELECT comments.date, comments.description as text, users.name FROM comments LEFT JOIN users ON comments.athor_id = users.id WHERE comments.product_id = :id ORDER BY comments.id DESC";
+        $stmt = self::$link->prepare($sql);
+        $stmt->bindParam(':id', $id, self::$link::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function addComment()
+    {
+        $sql = "INSERT INTO comments (athor_id, product_id, description) VALUES (:author, :product, :text)";
+        $stmt = self::$link->prepare($sql);
+        $stmt->bindParam(':author', $_SESSION['user'], self::$link::PARAM_INT);
+        $stmt->bindParam(':product', $_POST['product_id'], self::$link::PARAM_INT);
+        $stmt->bindParam(':text', $_POST['text'], self::$link::PARAM_STR);
+        return $stmt->execute();
+    }
+
     public function checkItem($id) {
         $sql = "SELECT * FROM products WHERE id = :id LIMIT 1";
         $stmt = self::$link->prepare($sql);

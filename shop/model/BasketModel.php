@@ -84,10 +84,11 @@ class BasketModel extends Connection
 
     public function getUserOrder($id)
     {
-        $sql = "SELECT products.id, products.name, products.price, products.description, baskets.count, state.name as status FROM baskets LEFT JOIN products ON baskets.product_id = products.id LEFT JOIN state ON baskets.status = state.id WHERE user_id = :user and order_id = :id";
+        $sql = "SELECT products.id, products.name, products.price, products.description, baskets.count, state.name as status FROM baskets LEFT JOIN products ON baskets.product_id = products.id LEFT JOIN state ON baskets.status = state.id WHERE (baskets.user_id = :user OR 1 < :admin) and order_id = :id";
         $stmt = self::$link->prepare($sql);
         $stmt->bindParam(':user', $_SESSION['user'], self::$link::PARAM_INT);
         $stmt->bindParam(':id', $id, self::$link::PARAM_INT);
+        $stmt->bindParam(':admin', $_SESSION['admin'], self::$link::PARAM_INT);
         $stmt->execute();
         $order = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -105,7 +106,8 @@ class BasketModel extends Connection
                 'order' => $order,
                 'totalSum' => $sum,
                 'totalCount' => $count,
-                'status' => $order[0]['status']
+                'status' => $order[0]['status'],
+                'back' => $_SERVER['HTTP_REFERER']
             ]
         ];
     }

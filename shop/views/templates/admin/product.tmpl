@@ -1,0 +1,16 @@
+<form class="form" action="/admin/addProduct" method="post">
+    <input type="text" name="name" placeholder="наименование">
+    <input type="text" name="desc" placeholder="описание">
+    <input type="number" name="price" placeholder="цена">
+    <select name="category">
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="brand">
+        {% for brand in brands %}
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn">Сохранить</button>
+</form>

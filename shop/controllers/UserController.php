@@ -12,7 +12,12 @@ class UserController extends FrontController
 {
     protected function action_index()
     {
-        $tmpl = ['page' => 'user'];
+        $tmpl = [
+            'page' => 'user',
+            'res' => [
+                'user' => $this->model->getUser()
+            ]
+        ];
         $tmpl = $this->model->checkAuth($tmpl);
         $page = new Autoloader($tmpl['page']);
         return $page->render($tmpl['res'] ?? []);
@@ -36,6 +41,6 @@ class UserController extends FrontController
     {
         Session::reset('user');
         header('Location: /');
-        return '';
+        return null;
     }
 }

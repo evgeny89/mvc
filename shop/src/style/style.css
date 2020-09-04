@@ -88,6 +88,7 @@ a:hover {
 .menu {
     width: 50%;
 }
+
 .menu ul {
     display: flex;
     justify-content: space-around;
@@ -112,18 +113,40 @@ a:hover {
 .form {
     min-width: 320px;
     height: 250px;
-    border: 1px solid black;
+    border: 1px solid #0b364a;
     padding: 20px;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
     align-items: center;
     border-radius: 10px;
-    margin: 0 auto;
+    margin: 50px auto;
+    box-shadow: 0 0 20px 5px #0b364a;
+}
+
+input, textarea {
+    padding: 5px;
+    background-color: #5d8cb7;
+    color: #f1eba7;
+    letter-spacing: 1.5px;
+}
+
+input::placeholder {
+    letter-spacing: 2px;
+    color: #cacac6;
 }
 
 .btn {
     padding: 5px;
+    background-color: #5d8cb7;
+    color: #f1eba7;
+    border: none;
+    border-radius: 5px;
+    transition: background-color .3s;
+}
+
+.btn:hover {
+    background-color: #70afec;
 }
 
 .block-form {
@@ -166,4 +189,52 @@ th {
     font-size: 18px;
     padding: 10px;
     text-align: left;
+}
+
+select {
+    background-color: #5d8cb7;
+    color: #f1eba7;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+option {
+    background-color: #5d8cb7;
+    color: #f1eba7;
+    display: flex;
+}
+
+.form-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+}
+
+.comments {
+    margin-top: 20px;
+    padding: 20px;
+    width: 500px;
+    border: 1px solid #5d8cb7;
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+}
+
+.comm {
+    padding: 20px;
+    margin: 10px 0;
+    background-color: #467298;
+    border-radius: 10px;
+}
+
+.header-comm {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.form-comm {
+    margin: 0;
+    padding: 0;
+    border: none;
 }

@@ -7,4 +7,24 @@
         <p>соства: {{ item.description }}</p>
         <p><a href="/catalog/add/{{ item.id }}">добавить в корзину</a></p>
     </div>
+
+</div>
+<div class="comments">
+    <p>Отзывы:</p>
+    {% for comm in comments %}
+        <div class="comm">
+            <div class="header-comm">
+                <h3>{{ comm.name }}</h3>
+                <h5>{{ comm.date }}</h5>
+            </div>
+            <p>{{ comm.text }}</p>
+        </div>
+    {% endfor %}
+    <div class="comm">
+        <form action="/catalog/addComment" method="post" class="form form-comm">
+            <input type="hidden" name="product_id" value="{{ item.id }}">
+            <textarea name="text" rows="10" cols="45"></textarea>
+            <button class="btn">Отправить</button>
+        </form>
+    </div>
 </div>
