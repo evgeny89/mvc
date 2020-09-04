@@ -1,8 +1,9 @@
 <form action="/user/reg" class="form" method="post">
-    <div class="block-form"><span>Login:</span> <input type="text" name="login" placeholder="login" value="">
+    <h3>{{ msg|raw }}</h3>
+    <div class="block-form"><span>Login:</span> <input type="text" name="login" placeholder="login" value="{{ login }}">
     </div>
     <div class="block-form"><span>Password:</span> <input type="password" name="password" placeholder="password"></div>
-    <div class="block-form"><span>Имя:</span> <input type="text" name="name" placeholder="name" value="">
+    <div class="block-form"><span>Имя:</span> <input type="text" name="name" placeholder="name" value="{{ name }}">
     </div>
     <button class="btn">Зарегистроваться</button>
 </form>

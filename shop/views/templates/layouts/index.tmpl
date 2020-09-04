@@ -22,6 +22,15 @@
             </ul>
         </nav>
     </div>
+    {% if submenu %}
+    <nav class="menu sub-menu">
+        <ul>
+            {% for link in submenu %}
+                <li><a href="{{ link.path }}">{{ link.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
     <section class="section">
         {{ content|raw }}
     </section>

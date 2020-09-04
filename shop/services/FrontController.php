@@ -6,12 +6,12 @@ namespace services;
 
 use config\Config;
 
-class FontController
+class FrontController
 {
     private $action;
     protected $props, $model;
 
-    public function __construct($action, $model, $props = '')
+    public function __construct($action, $model, $props)
     {
         $this->action = $action;
         $this->props = $props;
@@ -20,25 +20,24 @@ class FontController
 
     public function getAction()
     {
-        if (!$this->beforeAction()) {
-            return $this->getLayout($this->action_error(['content' => 'Ошибка 403, Доступ закрыт']));
+        if ($this->beforeAction()) {
+            $method = 'action_' . $this->action;
+            echo $this->getLayout($this->$method((int)$this->props));
+        } else {
+            echo $this->getLayout($this->action_error());
         }
 
-        if (method_exists($this, 'action_' . $this->action)) {
-            $method = 'action_' . $this->action;
-            return $this->getLayout($this->$method((int)$this->props));
-        } else {
-            return $this->getLayout($this->action_error());
-        }
+        $this->afterAction();
     }
 
     protected function beforeAction()
     {
-        return true;
+        return method_exists($this, 'action_' . $this->action);
     }
 
     protected function afterAction()
     {
+        // write history & log
         return true;
     }
 
@@ -48,13 +47,14 @@ class FontController
         return $page->render([
             'title' => $this->action,
             'content' => $method,
-            'menu' => Config::menu()
+            'menu' => Config::menu(),
+            'submenu' => Config::subMenu()
         ]);
     }
 
-    protected function action_error($props = ['content' => 'Ошибка 404, Страница не найдена'], $page = '404')
+    protected function action_error($props = ['content' => 'Ошибка 404, Страница не найдена'])
     {
-        $page = new Autoloader($page);
+        $page = new Autoloader('error');
         return $page->render($props);
     }
 }

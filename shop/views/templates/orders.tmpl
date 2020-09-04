@@ -1,0 +1,10 @@
+<table>
+    <th>заказы</th><th>сумма</th><th>количество</th>
+    {% for res in orders %}
+    <tr>
+        <td><a href="/basket/order/{{ res.id }}">Заказ от {{ res.date }}</a></td>
+        <td>Сумма: {{ res.summ}} руб.</td>
+        <td>Кол-во товаров: {{ res.count }}</td>
+    </tr>
+    {% endfor %}
+</table>
