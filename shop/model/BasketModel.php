@@ -6,6 +6,10 @@ namespace model;
 
 class BasketModel extends Connection
 {
+    /**
+     * метод получения товаров в корзине пользователя, но еще не добавленных в заказ
+     * @return array - массив товаров в корзине
+     */
     public function getItems()
     {
         $sql = "SELECT products.id, products.name, products.price, products.description, baskets.count FROM baskets LEFT JOIN products ON baskets.product_id = products.id WHERE user_id = :user and status = 0";
@@ -15,9 +19,15 @@ class BasketModel extends Connection
         return $stmt->fetchAll();
     }
 
+    /**
+     * изменение количества конкретного товара в корзине
+     * @param $id - id товара
+     * @param $change - единица изменения (либо +1, либо -1)
+     * @return bool - успешность операции
+     */
     public function changeCount($id, $change)
     {
-        if ($this->getAccess() !== 1) {
+        if (!$this->access->checkAuth()) {
             return false;
         }
         $sql = "SELECT count FROM baskets WHERE status = 0 and user_id = :user and product_id = :id LIMIT 1";
@@ -47,6 +57,10 @@ class BasketModel extends Connection
         return $stmt->execute();
     }
 
+    /**
+     * оформление заказа (все товары в корзине конкретного юзера со статусом 0 будут добавлены в новый заказ)
+     * @return bool - успешность операции
+     */
     public function createOrder()
     {
         $update = "UPDATE baskets SET status = 1, order_id = :id WHERE status = 0 and user_id = :user";
@@ -73,6 +87,10 @@ class BasketModel extends Connection
         }
     }
 
+    /**
+     * получение списка заказов пользователя
+     * @return array - ассоциативный массив заказов
+     */
     public function getUserOrders()
     {
         $sql = "SELECT orders.*, SUM(baskets.count) as count FROM orders LEFT JOIN baskets on orders.id = baskets.order_id WHERE user_id = :user AND baskets.status > 0 GROUP BY baskets.order_id ORDER BY baskets.order_id DESC";
@@ -82,6 +100,11 @@ class BasketModel extends Connection
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * получение подробной информации о конкретном заказе
+     * @param $id - id заказа
+     * @return array - ассоциативный массив с информацией о заказе
+     */
     public function getUserOrder($id)
     {
         $sql = "SELECT products.id, products.name, products.price, products.description, baskets.count, state.name as status FROM baskets LEFT JOIN products ON baskets.product_id = products.id LEFT JOIN state ON baskets.status = state.id WHERE (baskets.user_id = :user OR 1 < :admin) and order_id = :id";
@@ -91,6 +114,13 @@ class BasketModel extends Connection
         $stmt->bindParam(':admin', $_SESSION['admin'], self::$link::PARAM_INT);
         $stmt->execute();
         $order = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if(!$order) {
+            return [
+                'page' => 'error',
+                'res' => 'ошибка получения заказов'
+            ];
+        }
 
         $sum = 0;
         $count = 0;

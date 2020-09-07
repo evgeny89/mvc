@@ -8,7 +8,12 @@ use services\FrontController;
 
 class CatalogController extends FrontController
 {
-    protected function action_index($pageNum)
+    /**
+     * метод возвращает главную страницу сайта
+     * @param $pageNum - номер страницы
+     * @return string - сгенерированная страница
+     */
+    protected function action_index($pageNum = 0)
     {
         $page = new Autoloader('index');
         return $page->render([
@@ -18,6 +23,11 @@ class CatalogController extends FrontController
         ]);
     }
 
+    /**
+     * метод возвращает страницу товара
+     * @param null $id - можно передать явно или через props (берется из адресной строки), явно указывается при добавлении коментария
+     * @return string - сгенерированная страница товара
+     */
     protected function action_single($id = null)
     {
         $tmpl = [
@@ -28,26 +38,33 @@ class CatalogController extends FrontController
                 'back' => $_SERVER['HTTP_REFERER']
             ]
         ];
-        $tmpl = $this->model->checkAuth($tmpl);
         $page = new Autoloader($tmpl['page']);
         return $page->render($tmpl['res']);
     }
 
+    /**
+     * метод добавление товара в корзину
+     * @return string - возвращает либо страницу товара, либо ошибку
+     */
     protected function action_add()
     {
         if($this->model->addItemInBasket((int)$this->props)) {
             return $this->action_single();
         } else {
-            return $this->action_error(['content' => 'неизвестная ошибка добавления товара']);
+            return $this->action_error('неизвестная ошибка добавления товара');
         }
     }
 
+    /**
+     * метод добавления сомментария
+     * @return string - возвращает либо страницу товара, либо ошибку
+     */
     protected function action_addComment()
     {
         if($this->model->addComment()) {
             return $this->action_single((int)$_POST['product_id']);
         } else {
-            return $this->action_error(['content' => 'ошибка добавления отзыва']);
+            return $this->action_error('ошибка добавления отзыва');
         }
     }
 }

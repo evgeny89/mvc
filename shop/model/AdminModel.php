@@ -6,6 +6,10 @@ namespace model;
 
 class AdminModel extends Connection
 {
+    /**
+     * возвращает все заказы, новый сверху.
+     * @return array - фссоциативный массив заказов
+     */
     public function getAllOrders()
     {
         $sql = "SELECT baskets.user_id, baskets.count, baskets.order_id, baskets.status as state_id, users.name as user, orders.date, orders.summ FROM baskets LEFT JOIN users on baskets.user_id = users.id LEFT JOIN orders on baskets.order_id = orders.id WHERE baskets.order_id is not null ORDER BY baskets.order_id DESC";
@@ -14,6 +18,10 @@ class AdminModel extends Connection
         return array_reduce($stmt->fetchAll(\PDO::FETCH_ASSOC), array($this, 'reduce_cb'), []);
     }
 
+    /**
+     * возвращает список всех статусов заказов
+     * @return array - ассоциативный массив статусов
+     */
     public function getAllStatus()
     {
         $sql = "SELECT * FROM state";
@@ -22,6 +30,10 @@ class AdminModel extends Connection
         return $stmt->fetchAll(self::$link::FETCH_ASSOC);
     }
 
+    /**
+     * возвращает список юзеров роль которых ниже роли запросившего этот список пользователя
+     * @return array - ассоциативный массив пользователей отсортированый по ролям (старшие сверху)
+     */
     public function getAllUsers()
     {
         $sql = "SELECT * FROM users WHERE role < :admin ORDER BY role DESC";
@@ -31,6 +43,10 @@ class AdminModel extends Connection
         return $stmt->fetchAll(self::$link::FETCH_ASSOC);
     }
 
+    /**
+     * возвращает список доступных ролей для назначения, ниже роли текущего пользователя
+     * @return array - ассоциативный массив ролей
+     */
     public function getAllRole()
     {
         $sql = "SELECT * FROM role WHERE id < :user";
@@ -40,6 +56,10 @@ class AdminModel extends Connection
         return $stmt->fetchAll(self::$link::FETCH_ASSOC);
     }
 
+    /**
+     * возвращает список брендов каталога
+     * @return array - ассоциативный массив брендов
+     */
     public function getBrandList()
     {
         $sql = "SELECT * FROM brands";
@@ -48,6 +68,10 @@ class AdminModel extends Connection
         return $stmt->fetchAll(self::$link::FETCH_ASSOC);
     }
 
+    /**
+     * возвращает список категорий каталога
+     * @return array - ассоциативный массив категорий
+     */
     public function getCategoriesList()
     {
         $sql = "SELECT * FROM categories";
@@ -56,6 +80,10 @@ class AdminModel extends Connection
         return $stmt->fetchAll(self::$link::FETCH_ASSOC);
     }
 
+    /**
+     * изменяет указанные данные пользователя
+     * @return bool - успешность операции
+     */
     public function setUserData()
     {
         if (empty($_POST['name']) || empty($_POST['login'])) {
@@ -73,6 +101,10 @@ class AdminModel extends Connection
         return $stmt->execute();
     }
 
+    /**
+     * изменяет статус заказа
+     * @return bool - успешность операции
+     */
     public function changeStatusOrder()
     {
         $sql = "UPDATE baskets SET status = :status WHERE order_id = :id";
@@ -82,6 +114,10 @@ class AdminModel extends Connection
         return $stmt->execute();
     }
 
+    /**
+     * изменяет роль зопользователя
+     * @return bool - успешность операции
+     */
     public function changeUserRole()
     {
         if($_SESSION['admin'] <= $_POST['role']) {
@@ -95,6 +131,10 @@ class AdminModel extends Connection
         return $stmt->execute();
     }
 
+    /**
+     * добавляет новый товар в каталог
+     * @return bool - успешность операции
+     */
     public function addProduct()
     {
         $name = $_POST['name'];
@@ -117,6 +157,12 @@ class AdminModel extends Connection
         return $stmt->execute();
     }
 
+    /**
+     * callback метод для метода getAllOrders() для группировки по сумме заказов
+     * @param $res - результирующий массив
+     * @param $item - текущий массив-товар
+     * @return array - сгруппированый массив
+     */
     private function reduce_cb($res, $item)
     {
         if (isset($res[$item['order_id']])) {

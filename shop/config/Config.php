@@ -6,6 +6,9 @@ namespace config;
 
 class Config
 {
+    /**
+     * @var array[] - массив для коннекта к бд
+     */
     private static $db = [
         'host' => 'localhost',
         'user' => 'root',
@@ -13,6 +16,9 @@ class Config
         'name' => 'shop'
     ];
 
+    /**
+     * @var array[] - массив элементов меню
+     */
     private static $menu = [
         [
             'id' => 1,
@@ -56,7 +62,7 @@ class Config
             'name' => 'Админка',
             'path' => '/admin/index',
             'parent' => 0,
-            'access' => 4,
+            'access' => 3,
         ],
         [
             'id' => 8,
@@ -79,7 +85,7 @@ class Config
             'name' => 'Управление заказами',
             'path' => '/admin/orders',
             'parent' => 7,
-            'access' => 4,
+            'access' => 3,
             'sub-menu' => ['admin']
         ],
         [
@@ -87,7 +93,7 @@ class Config
             'name' => 'Управление пользователями',
             'path' => '/admin/users',
             'parent' => 7,
-            'access' => 5,
+            'access' => 4,
             'sub-menu' => ['admin']
         ],
         [
@@ -100,11 +106,19 @@ class Config
         ]
     ];
 
+    /**
+     * данные для соединения с бд
+     * @return array[] - массив коннекта
+     */
     public static function db()
     {
         return self::$db;
     }
 
+    /**
+     * отфильтрованное меню под конкретного пользователя с учетом авторизации и прав доступа
+     * @return array[] - массив меню
+     */
     public static function menu()
     {
         if (empty($_SESSION['user'])) {
@@ -113,21 +127,39 @@ class Config
             });
         } else {
             return array_filter(self::$menu, function ($item) {
-                return $item['access'] !== 1 && $item['access'] <= $_SESSION['admin'] + 2 && $item['parent'] === 0;
+                return $item['access'] !== 1 && $item['access'] <= $_SESSION['admin'] + 1 && $item['parent'] === 0;
             });
         }
     }
 
-    public static function subMenu() {
-        preg_match('/(\w+)\/\w+/', $_GET['page'], $path);
+    /**
+     * так же как и меню определяет дочерние пункты текущего меню и фильтрует по авторизации и доступу
+     * @return array[] - массив подменю
+     */
+    public static function subMenu()
+    {
+        $path = Path::getController();
         if (empty($_SESSION['user'])) {
             return array_filter(self::$menu, function ($item) use ($path) {
-                return $item['access'] < 2 && isset($item['sub-menu']) && in_array($path[1], $item['sub-menu']);
+                return $item['access'] < 2 && isset($item['sub-menu']) && in_array($path, $item['sub-menu']);
             });
         } else {
             return array_filter(self::$menu, function ($item) use ($path) {
-                return $item['access'] !== 1 && isset($item['sub-menu']) && $item['access'] <= $_SESSION['admin'] + 2 && in_array($path[1], $item['sub-menu']);
+                return $item['access'] !== 1 && isset($item['sub-menu']) && $item['access'] <= $_SESSION['admin'] + 1 && in_array($path, $item['sub-menu']);
             });
         }
+    }
+
+    /**
+     * нужно для проверки доступа во \FrontController->beforeAction()
+     * проверяет доступ по массиву menu (страницы товара нет в массиве, отдельно его проверяю)
+     * @return integer - число доступа
+     */
+    public static function access()
+    {
+        if(preg_match('~\/single\/?\d*~', Path::getPath()) === 1) return 2;
+        return array_reduce(self::$menu, function ($carry, $item) {
+            return $item['path'] === Path::getPath() ? $carry = $item['access'] : $carry;
+        }, 0);
     }
 }

@@ -8,6 +8,13 @@ use services\Session;
 
 class UserModel extends Connection
 {
+    /**
+     * авторизация пользователя
+     * если данные не польные - вернет страницу авторизации
+     * если комбинации login / password не найдено в базе - вернет ошибку
+     * если все ок - вернет личный кабинет
+     * @return array - сгенерированная страница
+     */
     public function authUser()
     {
 
@@ -38,13 +45,18 @@ class UserModel extends Connection
         } else {
             return [
                 'page' => 'error',
-                'res' => [
-                    'content' => 'Ошибка авторизации, пара <i>login & password</i> не обнаружена'
-                ]
+                'res' => 'Ошибка авторизации, пара <i>login & password</i> не обнаружена'
             ];
         }
     }
 
+    /**
+     * регистрация пользователя
+     * если данные не полные - вернет на страницу регистрации
+     * если логин занят - вернет на страницу регистрации
+     * если все ок - вызовет метод авторизации - авторизует и отправит в личный кабинет
+     * @return array - сгенерированная страница
+     */
     public function regUser()
     {
         if (empty($_POST['login']) || empty($_POST['password']) || empty($_POST['name'])) {
