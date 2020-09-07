@@ -45,7 +45,8 @@ class UserModel extends Connection
         }
     }
 
-    public function regUser() {
+    public function regUser()
+    {
         if (empty($_POST['login']) || empty($_POST['password']) || empty($_POST['name'])) {
             return [
                 'page' => 'reg',
@@ -63,7 +64,7 @@ class UserModel extends Connection
         $stmt->execute();
         $log = $stmt->rowCount();
 
-        if($log !== 0) {
+        if ($log !== 0) {
             return [
                 'page' => 'reg',
                 'res' => [

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Сен 01 2020 г., 15:30
+-- Время создания: Сен 04 2020 г., 14:50
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.1.33
 
@@ -54,9 +54,10 @@ INSERT INTO `baskets` (`id`, `user_id`, `product_id`, `count`, `date`, `order_id
 (21, 1, 12, 1, '2020-08-29 13:30:07', 9, 1),
 (22, 1, 2, 1, '2020-08-29 13:30:07', 9, 1),
 (23, 5, 2, 2, '2020-08-29 13:55:47', 10, 1),
-(33, 1, 3, 3, '2020-09-01 10:51:04', 11, 1),
-(34, 1, 3, 2, '2020-09-01 12:21:51', NULL, 0),
-(35, 1, 45, 5, '2020-09-01 12:21:57', NULL, 0);
+(33, 1, 3, 3, '2020-09-01 10:51:04', 11, 3),
+(34, 1, 3, 2, '2020-09-01 12:21:51', 13, 1),
+(35, 1, 45, 5, '2020-09-01 12:21:57', 13, 1),
+(37, 2, 3, 2, '2020-09-02 17:14:07', 14, 1);
 
 -- --------------------------------------------------------
 
@@ -124,7 +125,10 @@ INSERT INTO `comments` (`id`, `athor_id`, `product_id`, `date`, `description`) V
 (1, 1, 1, '2020-08-22 11:17:17', 'классная рубашка'),
 (2, 1, 1, '2020-08-22 16:44:13', 'Хорошо сидит'),
 (3, 1, 1, '2020-08-22 16:45:10', 'вчера купил'),
-(4, 1, 1, '2020-08-26 09:54:30', 'При стирке не линяет');
+(4, 1, 1, '2020-08-26 09:54:30', 'При стирке не линяет'),
+(5, 1, 2, '2020-09-02 19:49:19', 'цвет насыщенный, сидит хорошо, всем советую'),
+(6, 1, 2, '2020-09-02 19:51:48', 'там не 100% хлопок'),
+(7, 1, 3, '2020-09-02 19:53:02', 'кожа хорошего качества');
 
 -- --------------------------------------------------------
 
@@ -183,7 +187,9 @@ INSERT INTO `orders` (`id`, `date`, `summ`) VALUES
 (9, '2020-08-29 13:30:14', 5151),
 (10, '2020-08-29 13:55:52', 5632),
 (11, '2020-09-01 11:14:56', 23550),
-(12, '2020-09-01 11:16:17', NULL);
+(12, '2020-09-01 11:16:17', NULL),
+(13, '2020-09-02 09:46:47', 61050),
+(14, '2020-09-02 17:14:13', 15700);
 
 -- --------------------------------------------------------
 
@@ -1940,7 +1946,29 @@ INSERT INTO `products` (`id`, `category_id`, `brand_id`, `name`, `price`, `descr
 (1732, 3, 3, 'Кроссовки', 4320, 'хлопок 100%'),
 (1733, 1, 5, 'Футболка', 3196, 'Полиэстер 85% хлопок 15%'),
 (1734, 1, 1, 'Майка', 9352, 'хлопок 100%'),
-(1735, 1, 2, 'Топ', 3299, '100% хлопок');
+(1735, 1, 2, 'Топ', 3299, '100% хлопок'),
+(1736, 2, 3, 'Бейсболка', 299, 'текстиль 100%');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `role`
+--
+
+CREATE TABLE `role` (
+  `id` int NOT NULL,
+  `name` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `role`
+--
+
+INSERT INTO `role` (`id`, `name`) VALUES
+(1, 'user'),
+(2, 'moderator'),
+(3, 'admin'),
+(4, 'root');
 
 -- --------------------------------------------------------
 
@@ -2005,7 +2033,7 @@ CREATE TABLE `users` (
   `password` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `name` varchar(32) NOT NULL,
   `date_registration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `role` int NOT NULL DEFAULT '0'
+  `role` int NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -2013,10 +2041,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `name`, `date_registration`, `role`) VALUES
-(1, 'Admin', '$2y$10$jYRCqhXowWttaLeuD2FJ5.340TykPh0hDIPLDenQOTTUf5nr5lS1O', 'Евгений', '2020-08-21 10:36:55', 1),
-(2, 'User', '$2y$10$ybDkF3JQhjaiH.8caOjYbezUF1vkZiBSiyu/mCtI9hVJQtgm3GVku', 'Иван', '2020-08-21 10:49:14', 0),
-(5, 'evgeny89', '$2y$10$jYRCqhXowWttaLeuD2FJ5.340TykPh0hDIPLDenQOTTUf5nr5lS1O', 'Владимир', '2020-08-26 08:24:15', 0),
-(9, 'kas', '$2y$10$ybDkF3JQhjaiH.8caOjYbezUF1vkZiBSiyu/mCtI9hVJQtgm3GVku', 'Евген', '2020-08-31 11:43:22', 0);
+(1, 'Admin', '$2y$10$jYRCqhXowWttaLeuD2FJ5.340TykPh0hDIPLDenQOTTUf5nr5lS1O', 'Евгений', '2020-08-21 10:36:55', 4),
+(2, 'User', '$2y$10$ybDkF3JQhjaiH.8caOjYbezUF1vkZiBSiyu/mCtI9hVJQtgm3GVku', 'Иван', '2020-08-21 10:49:14', 1),
+(5, 'evgeny89', '$2y$10$jYRCqhXowWttaLeuD2FJ5.340TykPh0hDIPLDenQOTTUf5nr5lS1O', 'Владимир', '2020-08-26 08:24:15', 2),
+(9, 'Kas', '$2y$10$ybDkF3JQhjaiH.8caOjYbezUF1vkZiBSiyu/mCtI9hVJQtgm3GVku', 'Евген', '2020-08-31 11:43:22', 3);
 
 --
 -- Индексы сохранённых таблиц
@@ -2073,6 +2101,12 @@ ALTER TABLE `products`
   ADD KEY `products_ibfk_brand` (`brand_id`);
 
 --
+-- Индексы таблицы `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `router`
 --
 ALTER TABLE `router`
@@ -2089,7 +2123,8 @@ ALTER TABLE `state`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `login` (`login`);
+  ADD UNIQUE KEY `login` (`login`),
+  ADD KEY `role` (`role`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -2099,7 +2134,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `baskets`
 --
 ALTER TABLE `baskets`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT для таблицы `brands`
@@ -2117,7 +2152,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT для таблицы `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT для таблицы `menu`
@@ -2129,13 +2164,19 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1736;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1737;
+
+--
+-- AUTO_INCREMENT для таблицы `role`
+--
+ALTER TABLE `role`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
@@ -2169,6 +2210,12 @@ ALTER TABLE `comments`
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `products_ibfk_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Ограничения внешнего ключа таблицы `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

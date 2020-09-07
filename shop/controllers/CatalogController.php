@@ -18,12 +18,13 @@ class CatalogController extends FrontController
         ]);
     }
 
-    protected function action_single()
+    protected function action_single($id = null)
     {
         $tmpl = [
             'page' => 'single',
             'res' => [
-                'item' => $this->model->selectOne((int)$this->props),
+                'item' => $this->model->selectOne($id ?? (int)$this->props),
+                'comments' => $this->model->getComments($id ?? (int)$this->props),
                 'back' => $_SERVER['HTTP_REFERER']
             ]
         ];
@@ -41,4 +42,12 @@ class CatalogController extends FrontController
         }
     }
 
+    protected function action_addComment()
+    {
+        if($this->model->addComment()) {
+            return $this->action_single((int)$_POST['product_id']);
+        } else {
+            return $this->action_error(['content' => 'ошибка добавления отзыва']);
+        }
+    }
 }

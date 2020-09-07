@@ -1,18 +1,26 @@
 <div class="basket">
-    <header class="menu sub-menu">
-        {% if items %}
-            <a href="/basket/createOrder">Оформить в заказ</a>
-        {% endif %}
-    </header>
     <div class="items">
-        {% for item in items %}
-            <div class="card">
-                <h3><a href="/index/single/{{ item.id }}"> {{ item.name }}</a></h3>
-                <p>цена: &#8381; {{ item.price }}</p>
-                <p>соства: {{ item.description }}</p>
-                <p>количество:<a href="/basket/changePlus/{{ item.id }}"><button class="btn">+</button></a> {{ item.count }} <a href="/basket/changeMinus/{{ item.id }}"><button class="btn">-</button></a></p>
-                <p>общая сумма: &#8381; {{ item.price * item.count }}</p>
-            </div>
-        {% endfor %}
+        {% if items %}
+            {% for item in items %}
+                <div class="card">
+                    <h3><a href="/index/single/{{ item.id }}"> {{ item.name }}</a></h3>
+                    <p>цена: &#8381; {{ item.price }}</p>
+                    <p>соства: {{ item.description }}</p>
+                    <p>количество:<a href="/basket/changePlus/{{ item.id }}">
+                            <button class="btn">+</button>
+                        </a> {{ item.count }} <a href="/basket/changeMinus/{{ item.id }}">
+                            <button class="btn">-</button>
+                        </a></p>
+                    <p>общая сумма: &#8381; {{ item.price * item.count }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h5>нет товаров в корзине</h5>
+        {% endif %}
     </div>
+    {% if items %}
+        <header class="menu sub-menu">
+            <a href="/basket/createOrder">Оформить в заказ</a>
+        </header>
+    {% endif %}
 </div>
